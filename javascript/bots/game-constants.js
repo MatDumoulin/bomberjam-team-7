@@ -35,6 +35,13 @@ const BONUS_NUMBERS = Object.values(AllBonusCode).reduce((acc, bonusCode, i) => 
     return acc;
 }, {});
 
+const DIRECTIONS = [
+    [-1, 0], // left
+    [1, 0], // right
+    [0, -1], // up
+    [0, 1] // down
+];
+
 module.exports = {
     ALL_TILES,
     ACTION_STRINGS,
@@ -43,5 +50,6 @@ module.exports = {
     BOARD,
     BOMB_MAX_COUNTDOWN,
     BOMB_MIN_RANGE,
-    BONUS_NUMBERS
+    BONUS_NUMBERS,
+    DIRECTIONS
 };
