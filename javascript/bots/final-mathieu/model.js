@@ -7,7 +7,7 @@ const { DATA_SHAPE } = require("./data");
 /*
 *   Your model name. Saves and loads will use this.
 */
-const modelName = "base-model-4";
+const modelName = "final-mathieu";
 
 /*
 *   Define and compile your neural network.
@@ -25,14 +25,12 @@ function buildModel() {
     *   It is automatically disabled outside of training.
     */
     model.add(tf.layers.dropout({ rate : 0.15 }));
+
+    //model.add(tf.layers.maxPooling2d({ dataFormat: "channelsFirst", poolSize: 2, strides: 2, padding: "valid" }))
+
     model.add(tf.layers.conv2d({ dataFormat: "channelsFirst", filters: 64, kernelSize: 3, activation: "relu" }));
-    model.add(tf.layers.maxPooling2d({ dataFormat: "channelsFirst", poolSize: 2, strides: 2, padding: "valid" }))
+    model.add(tf.layers.maxPooling2d({ dataFormat: "channelsFirst", poolSize: 2 }));
     model.add(tf.layers.conv2d({ dataFormat: "channelsFirst", filters: 128, kernelSize: 3, activation: "relu" }));
-    
-    // model.add(tf.layers.conv2d({ dataFormat: "channelsFirst", filters: 64, kernelSize: 3, activation: "relu" }));
-    // model.add(tf.layers.maxPooling2d({ dataFormat: "channelsFirst", poolSize: 2 }));
-    // model.add(tf.layers.conv2d({ dataFormat: "channelsFirst", filters: 128, kernelSize: 3, activation: "relu" }));
-    // model.add(tf.layers.dropout({ rate : 0.15 }));
     model.add(tf.layers.dropout({ rate : 0.15 }));
 
     // Classification
