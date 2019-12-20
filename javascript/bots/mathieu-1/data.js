@@ -8,17 +8,16 @@ const { createMap } = require("../utils");
 function gameStateToModelInputConverter(state, playerId) {
     const currentPlayer = state.players[playerId];
     const otherPlayers = Object.values(state.players).filter(player => player.id !== playerId);
-    const sumScore = currentPlayer.score + otherPlayers.reduce((total, num) => total+num.score, 0);
-    const scoreMap = createMap(state.width, state.height, currentPlayer.score / sumScore);
-    const hasBombMap = createMap(state.width, state.height, currentPlayer.bombsLeft> 0 ? 1: 0);
-
+    const bombRangePerPlayer = createMap(state.width, state.height);
     const currentPlayerPositionMap = createMap(state.width, state.height);
     currentPlayerPositionMap[currentPlayer.x][currentPlayer.y] = 1;
+    bombRangePerPlayer[currentPlayer.x][currentPlayer.y] = currentPlayer.bombRange;
     //scoreMap[currentPlayer.x][currentPlayer.y] = (currentPlayer.score / sumScore);
     
     const otherPlayersPositionMap = createMap(state.width, state.height);
     for (const otherPlayer of otherPlayers) {
         otherPlayersPositionMap[otherPlayer.x][otherPlayer.y] = 1;
+        bombRangePerPlayer[otherPlayer.x][otherPlayer.y] = otherPlayer.bombRange;
         //scoreMap[otherPlayer.x][otherPlayer.y] = (otherPlayer.score / sumScore);
     }
 
@@ -98,8 +97,7 @@ function gameStateToModelInputConverter(state, playerId) {
         explosionsMap,
         bombsMap,
         suddenDeathMap,
-        /* scoreMap,*/
-        hasBombMap
+        bombRangePerPlayer
     ];
 }
 
