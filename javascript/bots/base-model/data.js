@@ -97,7 +97,6 @@ function gameStateToModelInputConverter(state, playerId) {
         explosionsMap,
         bombsMap,
         suddenDeathMap,
-        hasBombMap,
         bombRangePerPlayer
     ];
 }
@@ -106,7 +105,7 @@ function gameStateToModelInputConverter(state, playerId) {
 *   Do not forget to update this to match the dimensions that "gameStateToModelInputConverter" returns.
 *   It will be used to compile your model.
 */
-const NUMBER_OF_FEATURES = 9;
+const NUMBER_OF_FEATURES = 8;
 const DATA_SHAPE = [NUMBER_OF_FEATURES, BOARD.width, BOARD.height]
 
 module.exports = {
