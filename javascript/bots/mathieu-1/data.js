@@ -98,6 +98,7 @@ function gameStateToModelInputConverter(state, playerId) {
         explosionsMap,
         bombsMap,
         suddenDeathMap,
+        /* scoreMap,*/
         hasBombMap
     ];
 }

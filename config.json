@@ -1,6 +1,6 @@
 {
   "playerName": "SevenDeadlyBot",
-  "serverName": "10.58.128.64",
+  "serverName": "localhost",
   "serverPort": 4321,
-  "roomId": "RTeiFcFgZ"
+  "roomId": ""
 }
