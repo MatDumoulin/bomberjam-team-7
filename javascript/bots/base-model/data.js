@@ -8,13 +8,18 @@ const { createMap } = require("../utils");
 function gameStateToModelInputConverter(state, playerId) {
     const currentPlayer = state.players[playerId];
     const otherPlayers = Object.values(state.players).filter(player => player.id !== playerId);
+    const sumScore = currentPlayer.score + otherPlayers.reduce((total, num) => total+num.score, 0);
+    const scoreMap = createMap(state.width, state.height, currentPlayer.score / sumScore);
+    const hasBombMap = createMap(state.width, state.height, currentPlayer.bombsLeft> 0 ? 1: 0);
 
     const currentPlayerPositionMap = createMap(state.width, state.height);
     currentPlayerPositionMap[currentPlayer.x][currentPlayer.y] = 1;
-
+    //scoreMap[currentPlayer.x][currentPlayer.y] = (currentPlayer.score / sumScore);
+    
     const otherPlayersPositionMap = createMap(state.width, state.height);
     for (const otherPlayer of otherPlayers) {
         otherPlayersPositionMap[otherPlayer.x][otherPlayer.y] = 1;
+        //scoreMap[otherPlayer.x][otherPlayer.y] = (otherPlayer.score / sumScore);
     }
 
     const blocksMap = createMap(state.width, state.height);
@@ -81,7 +86,9 @@ function gameStateToModelInputConverter(state, playerId) {
         blocksMap,
         //wallsMap,
         //bombsMap,
-        suddenDeathMap
+        suddenDeathMap,
+        scoreMap,
+        hasBombMap
     ];
 }
 
@@ -89,7 +96,7 @@ function gameStateToModelInputConverter(state, playerId) {
 *   Do not forget to update this to match the dimensions that "gameStateToModelInputConverter" returns.
 *   It will be used to compile your model.
 */
-const NUMBER_OF_FEATURES = 4;
+const NUMBER_OF_FEATURES = 6;
 const DATA_SHAPE = [NUMBER_OF_FEATURES, BOARD.width, BOARD.height]
 
 module.exports = {
