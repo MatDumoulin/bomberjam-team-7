@@ -9,16 +9,23 @@ function gameStateToModelInputConverter(state, playerId) {
     const currentPlayer = state.players[playerId];
     const otherPlayers = Object.values(state.players).filter(player => player.id !== playerId);
     const bombRangePerPlayer = createMap(state.width, state.height);
+    const bombRemainingPerPlayer = createMap(state.width, state.height);
     const currentPlayerPositionMap = createMap(state.width, state.height);
     currentPlayerPositionMap[currentPlayer.x][currentPlayer.y] = 1;
     bombRangePerPlayer[currentPlayer.x][currentPlayer.y] = currentPlayer.bombRange;
-    //scoreMap[currentPlayer.x][currentPlayer.y] = (currentPlayer.score / sumScore);
-    
+    bombRemainingPerPlayer[currentPlayer.x][currentPlayer.y] = currentPlayer.bombsLeft;
+
     const otherPlayersPositionMap = createMap(state.width, state.height);
     for (const otherPlayer of otherPlayers) {
         otherPlayersPositionMap[otherPlayer.x][otherPlayer.y] = 1;
         bombRangePerPlayer[otherPlayer.x][otherPlayer.y] = otherPlayer.bombRange;
-        //scoreMap[otherPlayer.x][otherPlayer.y] = (otherPlayer.score / sumScore);
+        bombRemainingPerPlayer[otherPlayer.x][otherPlayer.y] = otherPlayer.bombsLeft;
+    }
+
+    const bonusMap = createMap(state.width, state.height);
+    const bonuses = Object.values(state.bonuses);
+    for(const bonus of bonuses){
+        bonusMap[bonus.x][bonus.y] = bonus.type == "bomb"? 1 : 2
     }
 
     const blocksMap = createMap(state.width, state.height);
@@ -97,8 +104,9 @@ function gameStateToModelInputConverter(state, playerId) {
         explosionsMap,
         bombsMap,
         suddenDeathMap,
-        hasBombMap,
-        bombRangePerPlayer
+        bombRangePerPlayer,
+        bonusMap,
+        bombRemainingPerPlayer
     ];
 }
 
@@ -106,7 +114,7 @@ function gameStateToModelInputConverter(state, playerId) {
 *   Do not forget to update this to match the dimensions that "gameStateToModelInputConverter" returns.
 *   It will be used to compile your model.
 */
-const NUMBER_OF_FEATURES = 9;
+const NUMBER_OF_FEATURES = 10;
 const DATA_SHAPE = [NUMBER_OF_FEATURES, BOARD.width, BOARD.height]
 
 module.exports = {
