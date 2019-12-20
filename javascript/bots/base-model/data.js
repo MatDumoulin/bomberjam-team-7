@@ -8,13 +8,18 @@ const { createMap } = require("../utils");
 function gameStateToModelInputConverter(state, playerId) {
     const currentPlayer = state.players[playerId];
     const otherPlayers = Object.values(state.players).filter(player => player.id !== playerId);
+    const sumScore = currentPlayer.score + otherPlayers.reduce((total, num) => total+num.score, 0);
+    const scoreMap = createMap(state.width, state.height, currentPlayer.score / sumScore);
+    const hasBombMap = createMap(state.width, state.height, currentPlayer.bombsLeft> 0 ? 1: 0);
 
     const currentPlayerPositionMap = createMap(state.width, state.height);
     currentPlayerPositionMap[currentPlayer.x][currentPlayer.y] = 1;
-
+    //scoreMap[currentPlayer.x][currentPlayer.y] = (currentPlayer.score / sumScore);
+    
     const otherPlayersPositionMap = createMap(state.width, state.height);
     for (const otherPlayer of otherPlayers) {
         otherPlayersPositionMap[otherPlayer.x][otherPlayer.y] = 1;
+        //scoreMap[otherPlayer.x][otherPlayer.y] = (otherPlayer.score / sumScore);
     }
 
     const blocksMap = createMap(state.width, state.height);
@@ -33,6 +38,16 @@ function gameStateToModelInputConverter(state, playerId) {
             const tile = state.tiles[x + y * state.width];
             if(tile === ALL_TILES.wall) {
                 wallsMap[x][y] = 1;
+            }
+        }
+    }
+
+    const explosionsMap = createMap(state.width, state.height);
+    for (let x = 0; x < state.width; x++) {
+        for (let y = 0; y < state.height; y++) {
+            const tile = state.tiles[x + y * state.width];
+            if(tile === ALL_TILES.explosion) {
+                explosionsMap[x][y] = 1;
             }
         }
     }
@@ -61,7 +76,7 @@ function gameStateToModelInputConverter(state, playerId) {
                 }
 
                 if(bombsMap[bomb.x][bomb.y] !== 0) {
-                    bombsMap[bomb.x][bomb.y] = Math.min(bombsMap[bomb.x][bomb.y], bomb.countdown);
+                    bombsMap[bomb.x][bomb.y] = Math.min(bombsMap[bomb.x][bomb.y], bomb.countdown / DEFAULT_BOMB_COUNTDOWN);
                 }
             }
         }
@@ -80,8 +95,11 @@ function gameStateToModelInputConverter(state, playerId) {
         otherPlayersPositionMap,
         blocksMap,
         wallsMap,
+        explosionsMap,
         bombsMap,
         suddenDeathMap
+        /* scoreMap,
+        hasBombMap */
     ];
 }
 
@@ -89,7 +107,7 @@ function gameStateToModelInputConverter(state, playerId) {
 *   Do not forget to update this to match the dimensions that "gameStateToModelInputConverter" returns.
 *   It will be used to compile your model.
 */
-const NUMBER_OF_FEATURES = 6;
+const NUMBER_OF_FEATURES = 7;
 const DATA_SHAPE = [NUMBER_OF_FEATURES, BOARD.width, BOARD.height]
 
 module.exports = {
