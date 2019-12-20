@@ -39,8 +39,8 @@ function gameStateToModelInputConverter(state, playerId) {
 
     // Predicting the explosions of bombs
     const bombsArray = Object.values(state.bombs);
-    const bombMap = createMap(state.width, state.height);
-    const sortedBombs = bombsArray.sort((a, b) => a.countdown - b.countdown);
+    const bombsMap = createMap(state.width, state.height);
+    let sortedBombs = bombsArray.sort((a, b) => a.countdown - b.countdown);
 
     while(sortedBombs.length > 0) {
         const bomb = sortedBombs.shift();
@@ -60,8 +60,8 @@ function gameStateToModelInputConverter(state, playerId) {
                     bombImpacted.countdown = bomb.countdown;
                 }
 
-                if(bombMap[bomb.x][bomb.y] !== 0) {
-                    bombMap[bomb.x][bomb.y] = Math.min(bombMap[bomb.x][bomb.y], bomb.countdown);
+                if(bombsMap[bomb.x][bomb.y] !== 0) {
+                    bombsMap[bomb.x][bomb.y] = Math.min(bombsMap[bomb.x][bomb.y], bomb.countdown);
                 }
             }
         }
@@ -79,8 +79,8 @@ function gameStateToModelInputConverter(state, playerId) {
         currentPlayerPositionMap,
         otherPlayersPositionMap,
         blocksMap,
-        wallsMap,
-        bombsMap,
+        //wallsMap,
+        //bombsMap,
         suddenDeathMap
     ];
 }
