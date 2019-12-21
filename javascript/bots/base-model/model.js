@@ -7,7 +7,7 @@ const { DATA_SHAPE } = require("./data");
 /*
 *   Your model name. Saves and loads will use this.
 */
-const modelName = "base-model-4";
+const modelName = "base-model-5";
 
 /*
 *   Define and compile your neural network.

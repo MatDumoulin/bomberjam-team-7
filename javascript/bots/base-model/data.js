@@ -61,34 +61,59 @@ function gameStateToModelInputConverter(state, playerId) {
     // Predicting the explosions of bombs
     const bombsArray = Object.values(state.bombs);
     const bombsMap = createMap(state.width, state.height);
-    let sortedBombs = bombsArray.sort((a, b) => a.countdown - b.countdown);
+    
 
-    while(sortedBombs.length > 0) {
-        const bomb = sortedBombs.shift();
-        for(const direction of DIRECTIONS) {
-            for (let i = 1; i <= bomb.bombRange; ++i) {
-                const x = bomb.x + i * direction[0];
-                const y = bomb.y + i * direction[1];
+    let sortedBombs = bombsArray.sort((a, b) => b.countdown - a.countdown );
 
-                // Stop propagating if the explosion hits a wall or a box
-                if(blocksMap[x][y] === 1 || wallsMap[x][y] === 1) {
-                    break;
-                }
-
-                const bombImpacted = bombsArray.find(bomb => bomb.x === x && bomb.y && y);
-
-                if (bombImpacted) {
-                    bombImpacted.countdown = bomb.countdown;
-                }
-
-                if(bombsMap[bomb.x][bomb.y] !== 0) {
-                    bombsMap[bomb.x][bomb.y] = Math.min(bombsMap[bomb.x][bomb.y], bomb.countdown / DEFAULT_BOMB_COUNTDOWN);
+    for(const bomb of sortedBombs){
+        bombsMap[bomb.x][bomb.y] = bomb.countdown;
+        for(const dir of DIRECTIONS){
+            for(var i=1; i <= bomb.range; i++){
+                var nextX = bomb.x + dir[0]*i
+                var nextY = bomb.y + dir[1]*i
+                if(nextX >= 0 && nextX < BOARD.width && nextY >= 0 && nextY < BOARD.height){
+                    bombsMap[nextX][nextY] = bomb.countdown 
                 }
             }
         }
-
-        sortedBombs = sortedBombs.sort((a, b) => a.countdown - b.countdown);
     }
+    // while(sortedBombs.length > 0) {
+    //     const bomb = sortedBombs.shift();
+    //     for(const direction of DIRECTIONS) {
+    //         for (let i = 1; i <= bomb.bombRange; ++i) {
+    //             const x = bomb.x + i * direction[0];
+    //             const y = bomb.y + i * direction[1];
+
+    //             // Stop propagating if the explosion hits a wall or a box
+    //             if(blocksMap[x][y] === 1 || wallsMap[x][y] === 1) {
+    //                 break;
+    //             }
+
+    //             // const bombImpacted = bombsArray.find(bomb => bomb.x === x && bomb.y && y);
+
+    //             // if (bombImpacted) {
+    //             //     bombImpacted.countdown = bomb.countdown;
+    //             // }
+
+    //             if(bombsMap[bomb.x][bomb.y] !== 0) {
+    //                 bombsMap[bomb.x][bomb.y] = Math.min(bombsMap[bomb.x][bomb.y], bomb.countdown / DEFAULT_BOMB_COUNTDOWN);
+    //             }
+    //         }
+    //     }
+
+    //     sortedBombs = sortedBombs.sort((a, b) => a.countdown - b.countdown);
+    // }
+    // bombsMap.forEach(x => {
+    //     var ligne = '';
+    //     x.forEach(y => {
+    //         ligne += y + ' '}
+    //         );
+    //     console.log(ligne)
+    // })
+
+    // console.log('-------------------------------------------------')
+    // console.log('-------------------------------------------------')
+    
 
     /*
     *   You can encode global state as a feature map filled with the value.
